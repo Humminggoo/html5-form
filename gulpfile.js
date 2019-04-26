@@ -3,14 +3,16 @@ const gulp = require("gulp"),
   browserSync = require("browser-sync").create(),
   sass = require("gulp-sass"),
   minCSS = require("gulp-clean-css"),
-  concat = require("gulp-concat"),
-  imagemin = require("gulp-imagemin"),
-  changed = require("gulp-changed");
+  concat = require("gulp-concat")
 
 function css() {
   return gulp
     .src("src/sass/*.scss")
-    .pipe(sass({ outputStyle: "expanded" }).on("error", sass.logError))
+    .pipe(
+      sass({
+        outputStyle: "expanded"
+      }).on("error", sass.logError)
+    )
     .pipe(autoprefixer("last 2 versions"))
     .pipe(concat("style.min.css"))
     .pipe(
@@ -21,19 +23,6 @@ function css() {
     )
     .pipe(gulp.dest("dist/css/"));
 }
-function image() {
-  return gulp
-    .src("src/img/*.svg")
-    .pipe(changed("src/img/"))
-    .pipe(
-      imagemin([
-        imagemin.svgo({
-          plugins: [{ removeViewBox: true }]
-        })
-      ])
-    )
-    .pipe(gulp.dest("dist/img/"));
-}
 function watch() {
   browserSync.init({
     open: "external",
@@ -41,7 +30,6 @@ function watch() {
     port: 8080
   });
   gulp.watch("src/sass/*.scss", css);
-  gulp.watch("src/img/*", image);
   gulp
     .watch(["dist/css/style.min.css", "./index.html"])
     .on("change", browserSync.reload);
